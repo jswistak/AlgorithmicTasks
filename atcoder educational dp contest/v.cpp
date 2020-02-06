@@ -5,8 +5,7 @@
 #include <vector>
 #include <iomanip>
 
-#define black first
-#define white second
+
 
 using namespace std;
 
