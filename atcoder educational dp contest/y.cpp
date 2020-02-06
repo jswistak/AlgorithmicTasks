@@ -78,7 +78,7 @@ int main() {
     for(int i = 0; i <= n; i++){
         int tmp = f(in[i].first - 1, in[i].second - 1);
         
-        for(int j = 0; j < i; ++j) {
+        for(int j = 0; j < i; j++) {
             if(in[j].first <= in[i].first && in[j].second <= in[i].second) {
                 tmp = sub(tmp, mul(dp[j], f(in[i].first - in[j].first, in[i].second-in[j].second)));
             }
@@ -86,6 +86,6 @@ int main() {
         
         dp[i] = tmp;
     }
-    printf("%d\n", dp[n]);
+    cout << dp[n];
 }
 
