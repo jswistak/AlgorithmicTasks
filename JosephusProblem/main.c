@@ -39,14 +39,14 @@ int main()
 	
 	
 	// Part 2 (2 point)
-	/*
-	*soldiers_list sl = create_soldiers_list(c.number_of_soldiers);
+	
+	soldiers_list sl = create_soldiers_list(c.number_of_soldiers);
 	if (!sl.head)
 	{
 		perror("List creation");
 		return 1;
 	}
-	*/
+	
 
 	//Part 3 (2 points)
 	/*
@@ -94,6 +94,41 @@ config read_config(const char* file, int n){
         return c;
     }
     fclose(fp);
-    return c;
+	
+    return c;    
+}
+
+soldiers_list create_soldiers_list(int n){
+    soldiers_list sol_list;
+    soldier *prev;
+    soldier *ptr;
+    soldiers_list er;
+
+    er.head = NULL;
+    er.tail = NULL;
+    prev = NULL;
+    ptr = NULL;
+    for(int i = 0; i < n; i++){
+        prev = ptr;
+        ptr = (soldier*) malloc(1 * sizeof(soldier));
+
+        if(ptr == NULL){
+            return er;
+        }
+        if(i == 0){
+            sol_list.head = ptr;
+        }
+        if(i == n -1){
+            sol_list.tail = ptr;
+        }
+        if(prev != NULL){
+            prev->next = ptr;
+        }
+        //prev = ptr;
+        ptr->id = i + 1;
+        
+    }
+	ptr->next = sol_list.head;
     
+    return sol_list;
 }
