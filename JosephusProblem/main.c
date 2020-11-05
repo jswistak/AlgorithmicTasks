@@ -49,7 +49,7 @@ int main()
 	
 
 	//Part 3 (2 points)
-	/*
+	
 	char *file_name_save = "elimination_order.txt";
 	int const survivor = eliminate_soldiers(file_name_save, &sl, c.kill_every_k);
 	if (survivor <= 0)
@@ -58,7 +58,7 @@ int main()
 		return 1;
 	}
 	printf("The survivor is soldier %d.\n", survivor);
-	*/
+	
 
 	return 0;
 }
@@ -131,4 +131,46 @@ soldiers_list create_soldiers_list(int n){
 	ptr->next = sol_list.head;
     
     return sol_list;
+}
+
+int eliminate_soldiers(const char* filename, soldiers_list* sl, int k){
+    FILE* fp;
+    soldier *curr, *prev;
+    int ind = 1;
+    fp = fopen(filename, "w");
+    if(fp == NULL){
+        return -1;
+    }
+    
+    if(sl->head == sl->tail){
+        return 1;
+    }
+    int i = 0;
+    curr = sl->head;
+    prev = sl->tail;
+    while(sl->head != sl->tail){
+        for(i = 1; i < k; i++){
+            prev = curr;
+            curr = curr->next;
+        }
+        if(curr == sl->head){
+            sl->head = curr->next;
+        }
+        if(curr == sl->tail){
+            sl->tail = prev;
+        }
+        prev->next = curr->next;
+        
+        if(fprintf(fp, "In %d step soldier %d was killed.\n", ind, curr->id) < 0){
+            return -1;
+        }
+		ind++;
+        curr = prev->next;
+        
+        
+    }
+    
+    int ans = sl->head->id;
+    fclose(fp);
+    return ans;
 }
