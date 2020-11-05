@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 #define IDX 8
 
 typedef struct {
@@ -23,12 +23,19 @@ config read_config(const char *, int);
 soldiers_list create_soldiers_list(int);
 int eliminate_soldiers(const char *, soldiers_list *, int);
 
-int main()
-{
+int main(int argc, char *argv[]){
+	//gcc main.c;./a.out config.dat file.out
+	int i;
+	char *file_name_read = "config.dat";// <-> argv[1]
+	char *file_name_save = "elimination_order.txt"; //<-> argv[2]
+	if(argc != 3){
+		printf("Error: worng arguments");
+		return 0;
+	}
+
 	// Part 1 (2 point)
 	
-	char *file_name_read = "config.dat";
-	config c = read_config(file_name_read, IDX);
+	config c = read_config(argv[1], IDX);
 	if (c.number_of_soldiers <= 0)
 	{
 		perror("Config");
@@ -50,8 +57,7 @@ int main()
 
 	//Part 3 (2 points)
 	
-	char *file_name_save = "elimination_order.txt";
-	int const survivor = eliminate_soldiers(file_name_save, &sl, c.kill_every_k);
+	int const survivor = eliminate_soldiers(argv[2], &sl, c.kill_every_k);
 	if (survivor <= 0)
 	{
 		perror("Elimiation order");
@@ -75,9 +81,11 @@ config read_config(const char* file, int n){
         return c;
     }
     fp = fopen(file, "rb");
+
     if(fp == NULL){
         c.number_of_soldiers = -1;
         c.kill_every_k = -1;
+		fclose(fp);
         return c;
     }
 
@@ -113,6 +121,7 @@ soldiers_list create_soldiers_list(int n){
         ptr = (soldier*) malloc(1 * sizeof(soldier));
 
         if(ptr == NULL){
+			free(ptr);
             return er;
         }
         if(i == 0){
@@ -129,7 +138,7 @@ soldiers_list create_soldiers_list(int n){
         
     }
 	ptr->next = sol_list.head;
-    
+    free(ptr);
     return sol_list;
 }
 
@@ -139,10 +148,12 @@ int eliminate_soldiers(const char* filename, soldiers_list* sl, int k){
     int ind = 1;
     fp = fopen(filename, "w");
     if(fp == NULL){
+		fclose(fp);
         return -1;
     }
     
     if(sl->head == sl->tail){
+		fclose(fp);
         return 1;
     }
     int i = 0;
@@ -165,11 +176,8 @@ int eliminate_soldiers(const char* filename, soldiers_list* sl, int k){
             return -1;
         }
 		ind++;
-        curr = prev->next;
-        
-        
+        curr = prev->next;   
     }
-    
     int ans = sl->head->id;
     fclose(fp);
     return ans;
