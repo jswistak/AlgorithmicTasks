@@ -134,7 +134,6 @@ soldiers_list create_soldiers_list(int n){
         
     }
     ptr->next = sol_list.head;
-    //free(ptr);
     return sol_list;
 }
 
@@ -173,7 +172,7 @@ int eliminate_soldiers(const char* filename, soldiers_list* sl, int k){
         }
         ind++;
         
-        free(curr);// commit po zmianie tego !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        free(curr);
         curr = prev->next;   
     }
     int ans = sl->head->id;
