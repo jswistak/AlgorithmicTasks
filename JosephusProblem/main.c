@@ -4,19 +4,19 @@
 #define IDX 8
 
 typedef struct {
-	int number_of_soldiers;
-	int kill_every_k;
+    int number_of_soldiers;
+    int kill_every_k;
 } config;
 
 typedef struct soldier
 {
-	int id;
-	struct soldier *next;
+    int id;
+    struct soldier *next;
 } soldier;
 
 typedef struct
 {
-	soldier *head, *tail;
+    soldier *head, *tail;
 } soldiers_list;
 
 config read_config(const char *, int);
@@ -24,49 +24,45 @@ soldiers_list create_soldiers_list(int);
 int eliminate_soldiers(const char *, soldiers_list *, int);
 
 int main(int argc, char *argv[]){
-	//gcc main.c;./a.out config.dat file.out
-	int i;
-	char *file_name_read = "config.dat";// <-> argv[1]
-	char *file_name_save = "elimination_order.txt"; //<-> argv[2]
-	if(argc != 3){
-		printf("Error: worng arguments");
-		return 0;
-	}
+    //gcc main.c;./a.out config.dat file.out
+    int i;
+    char *file_name_read = "config.dat";// <-> argv[1]
+    char *file_name_save = "elimination_order.txt"; //<-> argv[2]
+    if(argc > 1){
+        file_name_read = argv[1];
+    }
+    if(argc > 2){
+        file_name_save = argv[2];
+    }
 
-	// Part 1 (2 point)
-	
-	config c = read_config(argv[1], IDX);
-	if (c.number_of_soldiers <= 0)
-	{
-		perror("Config");
-		return 1;
-	}
-	printf("Configuration for index %d\nNumber of soldiers: %d, kill every %d\n",
-		   IDX, c.number_of_soldiers, c.kill_every_k);
-	
-	
-	// Part 2 (2 point)
-	
-	soldiers_list sl = create_soldiers_list(c.number_of_soldiers);
-	if (!sl.head)
-	{
-		perror("List creation");
-		return 1;
-	}
-	
+    // Part 1 (2 point)
 
-	//Part 3 (2 points)
-	
-	int const survivor = eliminate_soldiers(argv[2], &sl, c.kill_every_k);
-	if (survivor <= 0)
-	{
-		perror("Elimiation order");
-		return 1;
-	}
-	printf("The survivor is soldier %d.\n", survivor);
-	
+    config c = read_config(file_name_read, IDX);
+    if (c.number_of_soldiers <= 0){
+        perror("Config");
+        return 1;
+    }
+    printf("Configuration for index %d\nNumber of soldiers: %d, kill every %d\n",
+           IDX, c.number_of_soldiers, c.kill_every_k);
 
-	return 0;
+    // Part 2 (2 point)
+
+    soldiers_list sl = create_soldiers_list(c.number_of_soldiers);
+    if (!sl.head){
+        perror("List creation");
+        return 1;
+    }
+
+    //Part 3 (2 points)
+
+    int const survivor = eliminate_soldiers(file_name_save, &sl, c.kill_every_k);
+    if (survivor <= 0){
+        perror("Elimiation order");
+        return 1;
+    }
+    printf("The survivor is soldier %d.\n", survivor);
+
+    return 0;
 }
 
 
@@ -85,7 +81,7 @@ config read_config(const char* file, int n){
     if(fp == NULL){
         c.number_of_soldiers = -1;
         c.kill_every_k = -1;
-		fclose(fp);
+        fclose(fp);
         return c;
     }
 
@@ -102,7 +98,7 @@ config read_config(const char* file, int n){
         return c;
     }
     fclose(fp);
-	
+
     return c;    
 }
 
@@ -121,13 +117,13 @@ soldiers_list create_soldiers_list(int n){
         ptr = (soldier*) malloc(1 * sizeof(soldier));
 
         if(ptr == NULL){
-			free(ptr);
+            free(ptr);
             return er;
         }
         if(i == 0){
             sol_list.head = ptr;
         }
-        if(i == n -1){
+        if(i == n - 1){
             sol_list.tail = ptr;
         }
         if(prev != NULL){
@@ -137,8 +133,8 @@ soldiers_list create_soldiers_list(int n){
         ptr->id = i + 1;
         
     }
-	ptr->next = sol_list.head;
-    free(ptr);
+    ptr->next = sol_list.head;
+    //free(ptr);
     return sol_list;
 }
 
@@ -148,12 +144,12 @@ int eliminate_soldiers(const char* filename, soldiers_list* sl, int k){
     int ind = 1;
     fp = fopen(filename, "w");
     if(fp == NULL){
-		fclose(fp);
+        fclose(fp);
         return -1;
     }
     
     if(sl->head == sl->tail){
-		fclose(fp);
+        fclose(fp);
         return 1;
     }
     int i = 0;
@@ -175,7 +171,9 @@ int eliminate_soldiers(const char* filename, soldiers_list* sl, int k){
         if(fprintf(fp, "In %d step soldier %d was killed.\n", ind, curr->id) < 0){
             return -1;
         }
-		ind++;
+        ind++;
+        
+        free(curr);// commit po zmianie tego !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         curr = prev->next;   
     }
     int ans = sl->head->id;
